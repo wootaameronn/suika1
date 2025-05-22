@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>パレードレコードでTextAlive</title>
+  <script src="https://unpkg.com/textalive-app-api/dist/index.js"></script>
+</head>
+<body>
+  <div id="log" style="color:lime;font-size:24px;">クリックで開始</div>
+  <script>
+    const player = new TextAliveApp.Player({
+      app: {
+        token:"Ag3aTNKO99d7ET8S",
+        name: "パレードレコードテスト"
+      }
+    });
+
+    player.addListener({
+      onAppReady: (app) => {
+        if (!app.managed) {
+          player.createFromSongUrl("https://piapro.jp/t/qzGh/20240210010338", {
+            video: {
+              beatId: 4693981,
+              chordId: 2829915,
+              repetitiveSegmentId: 2945690
+            },
+            lyricId: 67793,
+            lyricDiffId: 20555
+          });
+        }
+      },
+      onPlay: () => {
+        document.getElementById("log").textContent = "再生開始！";
+      }
+    });
+
+    document.addEventListener("click", () => {
+      player.requestPlay();
+    });
+  </script>
+</body>
+</html>
