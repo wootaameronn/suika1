@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>パレードレコードでTextAlive</title>
+  <script src="https://unpkg.com/textalive-app-api/dist/index.js"></script>
+</head>
+<body>
+  <div id="log" style="color:lime; font-size:24px;">クリックで開始</div>
+
+  <script>
+    const animateWord = (now, unit) => {
+      if (unit.contains(now)) {
+        document.getElementById("log").textContent = unit.text;
+      }
+    };
+
+    const player = new TextAliveApp.Player({
+      app: {
+        token: "QkOS5HFb4ZbtOOPp",
+        name: "パレードレコードテスト"
+      }
+    });
+
+    let readyToPlay = false;
+
+    player.addListener({
+      onAppReady: (app) => {
+        if (!app.managed) {
+          player.createFromSongUrl("https://piapro.jp/t/GCgy/20250202202635", {
+            video: {
+              beatId: 4694279,
+              chordId: 2830734,
+              repetitiveSegmentId: 2946482
+            },
+            lyricId: 67814,
+            lyricDiffId: 20658
+          });
+        }
+      },
+
+      onVideoReady: () => {
+        let word = player.video.firstWord;
+        while (word) {
+          word.animate = animateWord;
+          word = word.next;
+        }
+        readyToPlay = true; // ここで初めて準備OK
+      },
+
+      onPlay: () => {
+        document.getElementById("log").textContent = "再生開始！";
+      }
+    });
+
+    document.addEventListener("click", () => {
+      console.log("クリックされました！");
+      if (readyToPlay) {
+        player.requestPlay();
+      } else {
+        alert("準備がまだ完了していません…");
+      }
+    });
+  </script>
+</body>
+</html>
