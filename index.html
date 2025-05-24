@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ストリートライトでTextAlive</title>
+  <script src="https://unpkg.com/textalive-app-api/dist/index.js"></script>
+</head>
+<body>
+  <div id="log" style="color:lime; font-size:24px;">クリックで開始</div>
+
+  <script>
+    // 単語をアニメーションする関数
+    const animateWord = (now, unit) => {
+      if (unit.contains(now)) {
+        document.getElementById("log").textContent = unit.text;
+      }
+    };
+
+    // プレイヤー作成
+    const player = new TextAliveApp.Player({
+      app: {
+        token: "WmOqH9Q4kZdGW5aH", // 自分の最新トークン
+        name: "ストリートライトテスト"
+      }
+    });
+
+    let readyToPlay = false;
+
+    player.addListener({
+      onAppReady: (app) => {
+        if (!app.managed) {
+          player.createFromSongUrl("https://piapro.jp/t/ULcJ/202305210202", {
+            video: {
+              beatId: 4694275,
+              chordId: 2830739,
+              repetitiveSegmentId: 2946478
+            },
+            lyricId: 67810,
+            lyricDiffId: 20657
+          });
+        }
+      },
+
+      onVideoReady: () => {
+        let word = player.video.firstWord;
+        while (word) {
+          word.animate = animateWord;
+          word = word.next;
+        }
+        readyToPlay = true;
+      },
+
+      onPlay: () => {
+        document.getElementById("log").textContent = "再生開始！";
+      }
+    });
+
+    // クリックで再生
+    document.addEventListener("click", () => {
+      if (readyToPlay) {
+        player.requestPlay();
+      } else {
+        alert("準備がまだ完了していません…");
+      }
+    });
+  </script>
+</body>
+</html>
